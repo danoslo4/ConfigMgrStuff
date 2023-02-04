@@ -1,0 +1,35 @@
+<# 
+#TODO Test this in a lab environment
+#TODO Add prompts for user prompted info
+Written by Dan Olson 2023
+
+ #>
+ 
+# Import the Configuration Manager module
+Import-Module ConfigurationManager
+
+# Connect to the SCCM site server
+$SiteServer = Get-PSDrive -Name "SCCM" -PSProvider CMSITE
+cd $SiteServer
+
+# Define the user prompted variables for the new SCCM application
+$ApplicationName = "New SCCM Application"
+$Publisher = "My Company"
+$SoftwareVersion = "1.0"
+
+# Define the static prompted variables for the new SCCM application
+$SoftwareLanguage = "English"
+$SoftwareReleaseDate = (Get-Date)
+$SoftwareInstallationType = "Manual"
+
+# Create the new SCCM application object
+$Application = New-CmApplication -LocalizedDisplayName $ApplicationName -Publisher $Publisher -Version $SoftwareVersion -Language $SoftwareLanguage -ReleaseDate $SoftwareReleaseDate -InstallationBehavior $SoftwareInstallationType
+
+# Save the new SCCM application to the SCCM database
+$Application | Set-CmApplication
+
+# Verify that the new SCCM application has been created
+Get-CmApplication -Name $ApplicationName
+
+# Output success message
+Write-Host "New SCCM application '$ApplicationName' has been created successfully!"
